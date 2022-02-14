@@ -50,10 +50,10 @@ app.use((req, res, next) => {
   });
 
 
-  //Mise à zero bdd
-  // db.sequelize.sync({ force: true }).then(() => {
-  //   console.log("Drop and re-sync db.");
-  // });
+  // Mise à zero bdd
+  db.sequelize.sync({ force: true }).then(() => {
+    console.log("Drop and re-sync db.");
+  });
 
   app.get("/", (req, res, next) => {
     res.json({ message: "Welcome to groupomania api." });

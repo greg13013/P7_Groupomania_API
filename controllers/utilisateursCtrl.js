@@ -29,7 +29,7 @@ exports.signup = (req, res, next) => {
               email: req.body.email,
               password: hash,
               admin: req.body.admin,
-              image: req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : 'Aucune image'
+              image: req.file ? `${req.protocol}://${req.get('host')}/images/utilisateurs/${req.file.filename}` : 'Aucune image'
             };
 
             // Save User in the database
@@ -113,7 +113,7 @@ exports.getUser = (req, res, next) => {
 async function deleteFichier(id) {
   UserModel.findOne({ where:  {id: id} })
     .then(user => {
-      const filename = user.image.split('/images/')[1];
+      const filename = user.image.split('/images/utilisateurs/')[1];
       fs.unlink(`images/${filename}`, () => { });
     })
 }
@@ -127,7 +127,7 @@ exports.update = async (req, res, next) => {
 
   const user = req.file ? {
     ...req.body,
-    image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+    image: `${req.protocol}://${req.get('host')}/images/utilisateurs/${req.file.filename}`,
   } : {
     ...req.body
   }
@@ -159,7 +159,7 @@ exports.delete = async (req, res) => {
   UserModel.destroy({
     where: { id: id }
   })
-    .then(num => {
+    .then(async (num) => {
       if (num == 1) {
         await deleteFichier(id)
         res.send({
