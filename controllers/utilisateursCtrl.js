@@ -1,0 +1,179 @@
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+
+const db = require("../models");
+const UserModel = db.user;
+
+//Créer un compte utilisateur
+exports.signup = (req, res, next) => {
+  //Utilisation de bcrypt pour le hash du mot de passe
+  if (!req.body) {
+    res.status(400).send({
+      message: "Contenu vide !"
+    });
+    return;
+  }
+
+  UserModel.findOne({ where: { email: req.body.email } })
+    .then(data => {
+      if (data !== null) {
+
+        return res.status(401).json({ error: 'Utilisateur deja existant' });
+      }
+      else {
+
+        bcrypt.hash(req.body.password, 10)
+          .then(hash => {
+            const user = {
+              username: req.body.username,
+              email: req.body.email,
+              password: hash,
+              admin: req.body.admin,
+              image: req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : 'Aucune image'
+            };
+
+            // Save User in the database
+            console.log(user);
+            UserModel.create(user)
+              .then(data => {
+                res.send(data);
+              })
+              .catch(err => {
+                res.status(500).send({
+                  message:
+                    err.message || "Erreur lors de la création de l'utilisateur."
+                });
+              });
+          })
+          .catch(error => res.status(500).json({ message: error }));
+      }
+
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Erreur lors de la récupération de l'utilisateur"
+      });
+    });
+
+
+};
+
+//Login de l'utilisateur
+exports.login = (req, res, next) => {
+  UserModel.findOne({ where: { email: req.body.email } })
+    .then(user => {
+      if (!user) {
+        return res.status(401).json({ error: 'Utilisateur non trouvé !' });
+      }
+      //Compare le mot de passe de la base de donnée à celui envoyer par l'utilisateur
+      bcrypt.compare(req.body.password, user.password)
+        .then(valid => {
+          if (!valid) {
+            return res.status(401).json({ error: 'Mot de passe incorrect !' });
+          }
+
+          //Création du token d'authentification avec un délai d'expirations
+          let token = jwt.sign(
+            { userId: user.id },
+            'RANDOM_TOKEN_SECRET',
+            { expiresIn: '24h' }
+          );
+
+
+          res.status(200).json({
+            userId: user.id,
+            token: token
+          });
+        })
+        .catch(error => res.status(500).json({ error }));
+    })
+    .catch(error => res.status(500).json({ error }));
+};
+
+//getAll Utilisateur
+exports.getAll = (req, res, next) => {
+  UserModel.findAll().then(data => {
+    res.status(200).json(data)
+  }).catch(error => res.status(500).json({ error }))
+}
+
+//getOne Utilisateur
+exports.getUser = (req, res, next) => {
+  const id = req.params.id;
+  UserModel.findOne({ where: { id: id } }).then(data => {
+    if (!data) {
+      return res.status(401).json({ error: 'Utilisateur non trouvé !' });
+    }
+    res.status(200).json(data)
+  }).catch(error => res.status(500).json({ error }))
+}
+
+//delete fichidf
+async function deleteFichier(id) {
+  UserModel.findOne({ where:  {id: id} })
+    .then(user => {
+      const filename = user.image.split('/images/')[1];
+      fs.unlink(`images/${filename}`, () => { });
+    })
+}
+
+//update User
+exports.update = async (req, res, next) => {
+
+  const id = req.params.id;
+
+  req.file ? await deleteFichier(id) : null;
+
+  const user = req.file ? {
+    ...req.body,
+    image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+  } : {
+    ...req.body
+  }
+
+  UserModel.update(user, {
+    where: { id: id }
+  })
+    .then(num => {
+      if (num == 1) {
+        res.send({
+          message: "Utilisateur a été modifié avec succès."
+        });
+      } else {
+        res.send({
+          message: `Impossible de modifier l'utilisateur avec id=${id}. Peut etre introuvable!`
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Impossible de modifier l'utilisateur avec id=" + id
+      });
+    });
+};
+
+//delete Utilisateur ID
+exports.delete = async (req, res) => {
+  const id = req.params.id;
+  UserModel.destroy({
+    where: { id: id }
+  })
+    .then(num => {
+      if (num == 1) {
+        await deleteFichier(id)
+        res.send({
+          message: "L'utilisateur a été supprimé !"
+        });
+      } else {
+        res.send({
+          message: `Impossible de supprimer l'utilisateur avec id=${id}. Peut etre introuvable!`
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Impossible de supprimer l'utilisateur avec id=" + id
+      });
+    });
+};
