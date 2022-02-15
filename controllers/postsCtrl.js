@@ -1,3 +1,4 @@
+const res = require("express/lib/response");
 const db = require("../models");
 const postModel = db.post;
 
@@ -5,9 +6,12 @@ const postModel = db.post;
 async function deleteFichier(id) {
     postModel.findOne({ where: { id: id } })
         .then(post => {
-            const filename = post.image.split('/images/posts/')[1];
-            fs.unlink(`images/${filename}`, () => { });
-        })
+            if (post.image) {
+
+                const filename = post.image.split('/images/posts/')[1];
+                fs.unlink(`images/${filename}`, () => { });
+            }
+        }).catch(error => {return error})
 }
 
 //Retourne un seul post

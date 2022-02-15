@@ -113,9 +113,12 @@ exports.getUser = (req, res, next) => {
 async function deleteFichier(id) {
   UserModel.findOne({ where:  {id: id} })
     .then(user => {
-      const filename = user.image.split('/images/utilisateurs/')[1];
-      fs.unlink(`images/${filename}`, () => { });
-    })
+      if (user.image) {
+
+        const filename = user.image.split('/images/utilisateurs/')[1];
+        fs.unlink(`images/${filename}`, () => { });
+      }
+    }).catch(error =>{ return error})
 }
 
 //update User
