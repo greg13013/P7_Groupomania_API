@@ -7,12 +7,6 @@ const UserModel = db.user;
 //Créer un compte utilisateur
 exports.signup = (req, res, next) => {
   //Utilisation de bcrypt pour le hash du mot de passe
-  if (!req.body) {
-    res.status(400).send({
-      message: "Contenu vide !"
-    });
-    return;
-  }
 
   UserModel.findOne({ where: { email: req.body.email } })
     .then(data => {
@@ -32,7 +26,7 @@ exports.signup = (req, res, next) => {
               image: req.file ? `${req.protocol}://${req.get('host')}/images/utilisateurs/${req.file.filename}` : 'Aucune image'
             };
 
-            // Save User in the database
+            // Creer l'utilisateur dans la bdd
             console.log(user);
             UserModel.create(user)
               .then(data => {
