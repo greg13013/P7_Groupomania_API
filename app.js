@@ -51,22 +51,26 @@ app.use((req, res, next) => {
 
 
   // Mise à zero bdd
-  db.sequelize.sync({ force: true }).then(() => {
-    console.log("Drop and re-sync db.");
-  });
+  // db.sequelize.sync({ force: true }).then(() => {
+  //   console.log(" ----------------- Drop and re-sync db. ----------------------");
+  // });
 
   app.get("/", (req, res, next) => {
     res.json({ message: "Welcome to groupomania api." });
     next();
   });
 
-
+console.log('-------------------------- DEBUT CONSOLE ------------------------');
 
 const utilisateurRoutes = require('./routes/utilisateursRoutes');
+const postRoutes = require('./routes/postsRoutes');
+const commentairesRoutes = require('./routes/commentairesRoutes');
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.use('/api/utilisateur', utilisateurRoutes);
+app.use('/api/post', postRoutes);
+app.use('/api/commentaire', commentairesRoutes);
 
 
 module.exports = app;

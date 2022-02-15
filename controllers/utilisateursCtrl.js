@@ -109,7 +109,7 @@ exports.getUser = (req, res, next) => {
   }).catch(error => res.status(500).json({ error }))
 }
 
-//delete fichidf
+//delete fichier
 async function deleteFichier(id) {
   UserModel.findOne({ where:  {id: id} })
     .then(user => {
@@ -156,12 +156,12 @@ exports.update = async (req, res, next) => {
 //delete Utilisateur ID
 exports.delete = async (req, res) => {
   const id = req.params.id;
+  await deleteFichier(id)
   UserModel.destroy({
     where: { id: id }
   })
-    .then(async (num) => {
+    .then((num) => {
       if (num == 1) {
-        await deleteFichier(id)
         res.send({
           message: "L'utilisateur a été supprimé !"
         });

@@ -13,11 +13,10 @@ module.exports = (req, res, next) => {
       next();
     }
   } catch (e) {
-    err = new Error ('Invalid request');
+    // err = new Error ('Invalid request');
     res.status(401).json({
-      erreur: e.toString(),
-      error: err.toString()
+      erreur: e.toString() + ' / token introuvable',
+      // error: err.toString()
     });
-    throw err;
   }
 };

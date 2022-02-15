@@ -2,12 +2,16 @@
 
 ## Installation ##
 
-Run `npm install`
+Lancer `npm install`
+
+Lancer serveur mysql puis créer base de donnée `groupomania`
+
+Configuration host, user/mdp dans config/db.config.js
 
 ## Usage ##
 
-Run `node server` or `nodemon server`
+Lancer `node server` ou `nodemon server`
 
 Port : 3000
 
-Use `Ctrl+C` in the terminal to stop the local server.
+Utiliser `Ctrl+C` dans le terminal pour arrêter le serveur local.

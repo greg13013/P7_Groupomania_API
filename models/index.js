@@ -28,7 +28,7 @@ db.commentaire = require("./commentaires.js")(sequelize, Sequelize);
 db.like = sequelize.define('like');
 
 /* Relation OneToMany 
-1 utilisateur a une list post
+1 utilisateur a une liste de post
 */
 
 db.user.hasMany(db.post, { as: "post" });
@@ -38,7 +38,7 @@ db.post.belongsTo(db.user, {
 });
 
 /* Relation OneToMany 
-1 utilisateur a une list commentaire
+1 utilisateur a une liste de commentaire
 */
 
 db.user.hasMany(db.commentaire, { as: "commentaire" });
@@ -48,7 +48,7 @@ db.commentaire.belongsTo(db.user, {
 });
 
 /* Relation OneToMany 
-1 post a une list commentaire
+1 post a une liste de commentaire
 */
 
 db.post.hasMany(db.commentaire, { as: "commentaire" });
@@ -58,7 +58,7 @@ db.commentaire.belongsTo(db.post, {
 });
 
 
-//Relation many to many
+//Relation many to many table Like
 
 db.user.belongsToMany(db.post, {through: db.like})
 

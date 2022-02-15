@@ -4,12 +4,16 @@ const router = express.Router();
 
 const utilisateursCtrl = require('../controllers/utilisateursCtrl');
 
-router.post('/signup', utilisateursCtrl.signup);
+//middleware pour authentification et image
+const auth = require('../middleware/auth');
+const multer = require('../middleware/multer-config');
+
+router.post('/signup', multer, utilisateursCtrl.signup);
 router.post('/login', utilisateursCtrl.login);
-router.get('/', utilisateursCtrl.getAll);
-router.get('/:id', utilisateursCtrl.getUser);
-router.put('/:id', utilisateursCtrl.update);
-router.delete('/:id', utilisateursCtrl.delete);
+router.get('/', auth, utilisateursCtrl.getAll);
+router.get('/:id', auth, utilisateursCtrl.getUser);
+router.put('/:id', auth, multer, utilisateursCtrl.update);
+router.delete('/:id', auth, utilisateursCtrl.delete);
 
 
 module.exports = router;
