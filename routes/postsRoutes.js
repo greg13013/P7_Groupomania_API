@@ -6,6 +6,7 @@ const postsCtrl = require('../controllers/postsCtrl.js');
 
 //middleware pour authentification et image
 const auth = require('../middleware/auth');
+const verifBody = require('../middleware/verifContenuSiVide');
 const multer = require('../middleware/multer-config');
 
 router.post('/', auth, multer, postsCtrl.create);
