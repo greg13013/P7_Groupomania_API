@@ -61,12 +61,12 @@ db.commentaire.belongsTo(db.post, {
 
 //Relation many to many table Like
 
-db.user.belongsToMany(db.post, { as: 'Like', through: db.like})
+// db.user.belongsToMany(db.post, { as: 'Like', through: db.like})
 db.post.belongsToMany(db.user, {as: 'Like', through: db.like})
 
 
 //Relation many to many table Dislike
-db.user.belongsToMany(db.post, {as: 'Dislike', through: db.dislike})
+// db.user.belongsToMany(db.post, {as: 'Dislike', through: db.dislike})
 db.post.belongsToMany(db.user, {as: 'Dislike', through: db.dislike})
 
 module.exports = db;

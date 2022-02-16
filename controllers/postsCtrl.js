@@ -1,5 +1,7 @@
 const db = require("../models");
 const postModel = db.post;
+const likes = db.like;
+const dislikes = db.dislike;
 
 //delete fichier
 async function deleteFichier(id) {
@@ -16,11 +18,22 @@ async function deleteFichier(id) {
 //Retourne un seul post
 exports.getPost = (req, res) => {
     const id = req.params.id;
-    postModel.findOne({ where: { id: id } }).then(post => {
+    postModel.findOne({ where: { id: id }}).then(post => {
         if (!post) {
             return res.status(401).json({ error: 'Post non trouvé !' });
         }
         res.status(200).json(post)
+    }).catch(error => res.status(500).json({ error }))
+}
+
+//Retourne les post avec like et dislike
+exports.getPostsWithLikesWithDislikes = (req, res) => {
+    
+    postModel.findAll({include: {model: likes, as: 'Like'}  }).then(posts => {
+        if (!posts) {
+            return res.status(401).json({ error: 'Post non trouvé !' });
+        }
+        res.status(200).json(posts)
     }).catch(error => res.status(500).json({ error }))
 }
 
