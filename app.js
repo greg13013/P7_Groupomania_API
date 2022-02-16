@@ -65,14 +65,14 @@ console.log('-------------------------- DEBUT CONSOLE ------------------------')
 const utilisateurRoutes = require('./routes/utilisateursRoutes');
 const postRoutes = require('./routes/postsRoutes');
 const commentairesRoutes = require('./routes/commentairesRoutes');
-const likesRoutes = require('./routes/likesRoutes');
+// const likesRoutes = require('./routes/likesRoutes');
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.use('/api/utilisateur', utilisateurRoutes);
 app.use('/api/post', postRoutes);
 app.use('/api/commentaire', commentairesRoutes);
-app.use('/api/like', likesRoutes);
+// app.use('/api/like', likesRoutes);
 
 
 module.exports = app;

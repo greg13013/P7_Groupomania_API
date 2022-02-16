@@ -26,6 +26,7 @@ db.commentaire = require("./commentaires.js")(sequelize, Sequelize);
 
 
 db.like = sequelize.define('like', {}, { timestamps: false });
+db.dislike = sequelize.define('dislike', {}, { timestamps: false });
 
 /* Relation OneToMany 
 1 utilisateur a une liste de post
@@ -60,8 +61,12 @@ db.commentaire.belongsTo(db.post, {
 
 //Relation many to many table Like
 
-db.user.belongsToMany(db.post, {through: db.like})
-db.post.belongsToMany(db.user, {through: db.like})
+db.user.belongsToMany(db.post, { as: 'Like', through: db.like})
+db.post.belongsToMany(db.user, {as: 'Like', through: db.like})
 
+
+//Relation many to many table Dislike
+db.user.belongsToMany(db.post, {as: 'Dislike', through: db.dislike})
+db.post.belongsToMany(db.user, {as: 'Dislike', through: db.dislike})
 
 module.exports = db;
