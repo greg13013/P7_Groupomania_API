@@ -18,7 +18,9 @@ router.get('/:id', auth, postsCtrl.getPost);
 router.put('/:id',verifBody, auth, multer, postsCtrl.update);
 router.delete('/:id', auth, postsCtrl.delete);
 
-router.get('/:id/likesDislikes', auth, postsCtrl.getPostsWithLikesWithDislikes);
+//Post avec like & dislike
+router.get('/likesDislikes', auth, postsCtrl.getPostsWithLikesWithDislikes);
+router.get('/:id/likesDislikes', auth, postsCtrl.getPostWithLikeDislike);
 
 //SECTION LIKE
 router.post('/:id/like', auth, likesCtrl.like);

@@ -1,7 +1,5 @@
 const db = require("../models");
 const postModel = db.post;
-const likes = db.like;
-const dislikes = db.dislike;
 
 //delete fichier
 async function deleteFichier(id) {
@@ -12,13 +10,13 @@ async function deleteFichier(id) {
                 const filename = post.image.split('/images/posts/')[1];
                 fs.unlink(`images/${filename}`, () => { });
             }
-        }).catch(error => {return error})
+        }).catch(error => { return error })
 }
 
 //Retourne un seul post
 exports.getPost = (req, res) => {
     const id = req.params.id;
-    postModel.findOne({ where: { id: id }}).then(post => {
+    postModel.findOne({ where: { id: id } }).then(post => {
         if (!post) {
             return res.status(401).json({ error: 'Post non trouvé !' });
         }
@@ -26,16 +24,36 @@ exports.getPost = (req, res) => {
     }).catch(error => res.status(500).json({ error }))
 }
 
-//Retourne les post avec like et dislike
-exports.getPostsWithLikesWithDislikes = (req, res) => {
-    
-    postModel.findAll({include: {model: likes, as: 'Like'}  }).then(posts => {
-        if (!posts) {
+//Retourne un seul post avec like & dislike
+exports.getPostWithLikeDislike = (req, res) => {
+    const id = req.params.id;
+    postModel.findOne({ where: { id: id }, include: [
+        'Like',
+        'Dislike'
+    ] }).then(post => {
+        if (!post) {
             return res.status(401).json({ error: 'Post non trouvé !' });
         }
-        res.status(200).json(posts)
+        res.status(200).json(post)
     }).catch(error => res.status(500).json({ error }))
 }
+
+//Retourne Les post avec like et dislike
+exports.getPostsWithLikesWithDislikes = (req, res) => {
+
+    //Utilisez l'alias défini dans models/index.js de la relation many to many
+    postModel.findAll({
+        include: [
+            'Like',
+            'Dislike'
+        ]
+    }).then(posts => {
+
+        res.status(200).json(posts)
+
+    }).catch(error => res.status(500).json({ error }))
+}
+
 
 //Retourne tous les post
 exports.getAll = (req, res) => {
@@ -75,32 +93,32 @@ exports.update = async (req, res) => {
     req.file ? await deleteFichier(id) : null;
 
     const post = req.file ? {
-      ...req.body,
-      image: `${req.protocol}://${req.get('host')}/images/posts/${req.file.filename}`,
+        ...req.body,
+        image: `${req.protocol}://${req.get('host')}/images/posts/${req.file.filename}`,
     } : {
-      ...req.body
+        ...req.body
     }
 
     console.log(post);
 
     postModel.update(post, {
         where: { id: id }
-      })
+    })
         .then(num => {
-          if (num == 1) {
-            res.send({
-              message: "Post modifié avec succès."
-            });
-          } else {
-            res.send({
-              message: `Impossible de modifier le post avec id=${id}. Peut etre introuvable!`
-            });
-          }
+            if (num == 1) {
+                res.send({
+                    message: "Post modifié avec succès."
+                });
+            } else {
+                res.send({
+                    message: `Impossible de modifier le post avec id=${id}. Peut etre introuvable!`
+                });
+            }
         })
         .catch(err => {
-          res.status(500).send({
-            message: "Impossible de modifier le post avec id=" + id
-          });
+            res.status(500).send({
+                message: "Impossible de modifier le post avec id=" + id
+            });
         });
 }
 
