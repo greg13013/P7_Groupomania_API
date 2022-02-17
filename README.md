@@ -8,6 +8,8 @@ Lancer serveur mysql puis créer base de donnée `groupomania`
 
 Configuration host, user/mdp dans config/db.config.js
 
+Enlever commentaire dans app.js lignee 76-77-78 pour la construction de la bdd
+
 ## Usage ##
 
 Lancer `node server` ou `nodemon server`
