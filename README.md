@@ -15,3 +15,9 @@ Lancer `node server` ou `nodemon server`
 Port : 3000
 
 Utiliser `Ctrl+C` dans le terminal pour arrêter le serveur local.
+
+
+## SWAGGER ##
+
+http://localhost:3001/api-docs/
+=> swagger-output.json

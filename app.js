@@ -11,6 +11,28 @@ const app = express();
 
 const path = require('path');
 
+//Generateur swagger
+// const swaggerAutogen = require('swagger-autogen')();
+
+// const doc = {
+//   info: {
+//     title: 'My API',
+//     description: 'Description',
+//   },
+//   host: 'localhost:3001',
+//   schemes: ['http'],
+// };
+
+// const outputFile = './swagger-output.json';
+// const endpointsFiles = ['./app.js'];
+
+// swaggerAutogen(outputFile, endpointsFiles, doc);
+
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger-output.json');
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 // middleware qui bloque les requetes quand surchargé
 app.use(function(req, res, next) {
   if (toobusy()) {

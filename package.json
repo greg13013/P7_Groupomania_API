@@ -18,6 +18,8 @@
     "multer": "^1.4.4",
     "mysql2": "^2.3.3",
     "sequelize": "^6.16.1",
+    "swagger-autogen": "^2.18.8",
+    "swagger-ui-express": "^4.3.0",
     "toobusy-js": "^0.5.1"
   }
 }
