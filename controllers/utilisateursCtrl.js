@@ -13,7 +13,7 @@ exports.signup = (req, res, next) => {
     .then(data => {
       if (data !== null) {
 
-        return res.status(401).json({ error: 'Utilisateur deja existant' });
+        return res.status(400).json({ error: 'Utilisateur deja existant' });
       }
       else {
         console.log('file upload : ', req.file)
@@ -107,47 +107,60 @@ exports.getUser = (req, res, next) => {
 
 //delete fichier
 async function deleteFichier(id) {
-   UserModel.findOne({ where:  {id: id} })
+  UserModel.findOne({ where: { id: id } })
     .then(user => {
       if (user.image) {
         const filename = user.image.split('images/utilisateurs/')[1];
-        console.log(filename);
         fs.unlink(`images/utilisateurs/${filename}`, () => { });
       }
-    }).catch(error =>{ return error})
+    }).catch(error => { return error })
 }
 
 //update User
 exports.update = async (req, res, next) => {
 
+
   const id = req.params.id;
 
-  req.file ? await deleteFichier(id) : null;
+  await UserModel.findOne({ where: { email: req.body.email } })
+    .then( async data => {
 
-  const user = req.file ? {
-    ...req.body,
-    image: `${req.protocol}://${req.get('host')}/images/utilisateurs/${req.file.filename}`,
-  } : {
-    ...req.body
-  }
-
-  UserModel.update(user, {
-    where: { id: id }
-  })
-    .then(num => {
-      if (num == 1) {
-        res.send({
-          message: "Utilisateur a été modifié avec succès."
-        });
-      } else {
-        res.send({
-          message: `Impossible de modifier l'utilisateur avec id=${id}. Peut etre introuvable!`
-        });
+      if (data !== null && data.dataValues.id != id) {
+        return res.status(400).json({ error: 'Utilisateur deja existant' })
       }
-    })
-    .catch(err => {
+
+      req.file ? await deleteFichier(id) : null;
+
+      const user = req.file ? {
+        ...req.body,
+        image: `${req.protocol}://${req.get('host')}/images/utilisateurs/${req.file.filename}`,
+      } : {
+        ...req.body
+      }
+
+      await UserModel.update(user, {
+        where: { id: id }
+      })
+        .then(num => {
+          if (num == 1) {
+            res.send({
+              message: "Utilisateur a été modifié avec succès."
+            });
+          } else {
+            res.send({
+              message: `Impossible de modifier l'utilisateur avec id=${id}. Peut etre introuvable!`
+            });
+          }
+        })
+        .catch(err => {
+          res.status(500).send({
+            message: "Impossible de modifier l'utilisateur avec id=" + id
+          });
+        });
+    }).catch(err => {
       res.status(500).send({
-        message: "Impossible de modifier l'utilisateur avec id=" + id
+        message:
+          err.message || "Erreur lors de la récupération de l'utilisateur"
       });
     });
 };
