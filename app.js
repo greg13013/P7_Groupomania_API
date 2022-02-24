@@ -62,6 +62,7 @@ app.use(hsts({
 }))
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 //CORS
 app.use((req, res, next) => {
@@ -87,6 +88,7 @@ console.log('-------------------------- DEBUT CONSOLE ------------------------')
 const utilisateurRoutes = require('./routes/utilisateursRoutes');
 const postRoutes = require('./routes/postsRoutes');
 const commentairesRoutes = require('./routes/commentairesRoutes');
+
 // const likesRoutes = require('./routes/likesRoutes');
 
 app.use('/images', express.static(path.join(__dirname, 'images')));

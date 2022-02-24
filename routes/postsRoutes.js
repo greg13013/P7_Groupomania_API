@@ -12,10 +12,10 @@ const verifBody = require('../middleware/verifContenuSiVide');
 const multer = require('../middleware/multer-config');
 
 
-router.post('/',verifBody, auth, multer, postsCtrl.create);
+router.post('/', auth, multer, postsCtrl.create);
 router.get('/', auth, postsCtrl.getAll);
 router.get('/:id', auth, postsCtrl.getPost);
-router.put('/:id',verifBody, auth, multer, postsCtrl.update);
+router.put('/:id', auth, multer, postsCtrl.update);
 router.delete('/:id', auth, postsCtrl.delete);
 
 //Post avec like & dislike

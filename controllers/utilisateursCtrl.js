@@ -15,7 +15,8 @@ exports.signup = (req, res, next) => {
         return res.status(401).json({ error: 'Utilisateur deja existant' });
       }
       else {
-
+        console.log('file upload : ', req.file)
+        console.log('body upload : ', req.body)
         bcrypt.hash(req.body.password, 10)
           .then(hash => {
             const user = {

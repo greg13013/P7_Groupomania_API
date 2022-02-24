@@ -9,10 +9,10 @@ const auth = require('../middleware/auth');
 
 const verifBody = require('../middleware/verifContenuSiVide');
 
-router.post('/',verifBody, auth, commentairesCtrl.create);
+router.post('/', auth, commentairesCtrl.create);
 router.get('/',  auth, commentairesCtrl.getAll);
 router.get('/:id',  auth, commentairesCtrl.getCommentaire);
-router.put('/:id',verifBody,  auth, commentairesCtrl.update);
+router.put('/:id',  auth, commentairesCtrl.update);
 router.delete('/:id',  auth, commentairesCtrl.delete);
 
 
