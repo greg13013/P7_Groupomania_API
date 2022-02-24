@@ -7,7 +7,7 @@ const utilisateursCtrl = require('../controllers/utilisateursCtrl');
 //middleware pour authentification et image
 const auth = require('../middleware/auth');
 const verifBody = require('../middleware/verifContenuSiVide');
-const multer = require('../middleware/multer-config');
+const multer = require('../middleware/multer-configUtilisateur');
 
 router.post('/signup', multer, utilisateursCtrl.signup);
 router.post('/login',verifBody, utilisateursCtrl.login);

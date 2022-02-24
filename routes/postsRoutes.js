@@ -9,7 +9,7 @@ const dislikesCtrl = require('../controllers/dislikesCtrl.js');
 //middleware pour authentification et image
 const auth = require('../middleware/auth');
 const verifBody = require('../middleware/verifContenuSiVide');
-const multer = require('../middleware/multer-config');
+const multer = require('../middleware/multer-configPost');
 
 
 router.post('/', auth, multer, postsCtrl.create);
