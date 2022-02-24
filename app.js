@@ -91,7 +91,8 @@ const commentairesRoutes = require('./routes/commentairesRoutes');
 
 // const likesRoutes = require('./routes/likesRoutes');
 
-app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/images/utilisateurs', express.static(path.join(__dirname, 'images')));
+app.use('/images/posts', express.static(path.join(__dirname, 'images')));
 
 app.use('/api/utilisateur', utilisateurRoutes);
 app.use('/api/post', postRoutes);
