@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const fs = require('fs');
 
 const db = require("../models");
 const UserModel = db.user;
@@ -106,12 +107,12 @@ exports.getUser = (req, res, next) => {
 
 //delete fichier
 async function deleteFichier(id) {
-  UserModel.findOne({ where:  {id: id} })
+   UserModel.findOne({ where:  {id: id} })
     .then(user => {
       if (user.image) {
-
-        const filename = user.image.split('/images/utilisateurs/')[1];
-        fs.unlink(`images/${filename}`, () => { });
+        const filename = user.image.split('images/utilisateurs/')[1];
+        console.log(filename);
+        fs.unlink(`images/utilisateurs/${filename}`, () => { });
       }
     }).catch(error =>{ return error})
 }

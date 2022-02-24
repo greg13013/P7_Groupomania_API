@@ -1,4 +1,5 @@
 const db = require("../models");
+const fs = require('fs');
 const postModel = db.post;
 
 //delete fichier
