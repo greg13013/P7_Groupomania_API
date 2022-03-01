@@ -56,9 +56,9 @@ exports.getPostsWithLikesWithDislikes = (req, res) => {
 }
 
 
-//Retourne tous les post
+//Retourne tous les post avec les users
 exports.getAll = (req, res) => {
-    postModel.findAll().then(posts => {
+    postModel.findAll( {include: 'user'}).then(posts => {
         res.status(200).json(posts)
     }).catch(error => res.status(500).json({ error }))
 }
@@ -123,7 +123,7 @@ exports.update = async (req, res) => {
         });
 }
 
-//delete Utilisateur ID
+//delete POST ID
 exports.delete = async (req, res) => {
     const id = req.params.id;
     await deleteFichier(id)

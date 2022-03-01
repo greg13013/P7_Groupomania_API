@@ -123,7 +123,7 @@ exports.update = async (req, res, next) => {
   const id = req.params.id;
 
   await UserModel.findOne({ where: { email: req.body.email } })
-    .then( async data => {
+    .then(async data => {
 
       if (data !== null && data.dataValues.id != id) {
         return res.status(400).json({ error: 'Utilisateur deja existant' })
@@ -168,24 +168,32 @@ exports.update = async (req, res, next) => {
 //delete Utilisateur ID
 exports.delete = async (req, res) => {
   const id = req.params.id;
-  await deleteFichier(id)
-  UserModel.destroy({
-    where: { id: id }
-  })
-    .then((num) => {
-      if (num == 1) {
-        res.send({
-          message: "L'utilisateur a été supprimé !"
-        });
-      } else {
-        res.send({
-          message: `Impossible de supprimer l'utilisateur avec id=${id}. Peut etre introuvable!`
+  UserModel.findOne({ where: { id: id } })
+    .then(user => {
+      if (user.image) {
+        const filename = user.image.split('images/utilisateurs/')[1];
+        fs.unlink(`images/utilisateurs/${filename}`, () => {
+
+          UserModel.destroy({
+            where: { id: id }
+          })
+            .then((num) => {
+              if (num == 1) {
+                res.send({
+                  message: "L'utilisateur a été supprimé !"
+                });
+              } else {
+                res.send({
+                  message: `Impossible de supprimer l'utilisateur avec id=${id}. Peut etre introuvable!`
+                });
+              }
+            })
+            .catch(err => {
+              res.status(500).send({
+                message: "Impossible de supprimer l'utilisateur avec id=" + id
+              });
+            });
         });
       }
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: "Impossible de supprimer l'utilisateur avec id=" + id
-      });
-    });
+    }).catch(error => { return error })
 };
