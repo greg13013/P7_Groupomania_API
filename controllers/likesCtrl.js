@@ -4,6 +4,7 @@ const postModel = db.post;
 const userModel = db.user;
 
 const dislikes = db.dislike;
+const likes = db.like;
 
 exports.like = async (req, res) => {
 
@@ -29,8 +30,16 @@ exports.like = async (req, res) => {
                     console.log("user not found!");
                     return res.status(400).json({ message: 'Erreur user not found' });
                 }
-                post.addLike(user);
-                res.status(200).json({ message: 'Like' })
+                likes.findOne({where: {userId: userId, postId: postId}}).then(data => {
+                    if(data) {
+                        post.removeLike(user);
+                        res.status(200).json({ message: 'Like supprimé' })
+                    } else {
+                        
+                        post.addLike(user);
+                        res.status(200).json({ message: 'Like' })
+                    }
+                })
             })
         })
     }).catch(err => console.log(err));

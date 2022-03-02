@@ -28,10 +28,12 @@ exports.getPost = (req, res) => {
 //Retourne un seul post avec like & dislike
 exports.getPostWithLikeDislike = (req, res) => {
     const id = req.params.id;
-    postModel.findOne({ where: { id: id }, include: [
-        'Like',
-        'Dislike'
-    ] }).then(post => {
+    postModel.findOne({
+        where: { id: id }, include: [
+            'Like',
+            'Dislike'
+        ]
+    }).then(post => {
         if (!post) {
             return res.status(401).json({ error: 'Post non trouvé !' });
         }
@@ -58,7 +60,7 @@ exports.getPostsWithLikesWithDislikes = (req, res) => {
 
 //Retourne tous les post avec les users
 exports.getAll = (req, res) => {
-    postModel.findAll( {include: 'user'}).then(posts => {
+    postModel.findAll({ include: 'user' }).then(posts => {
         res.status(200).json(posts)
     }).catch(error => res.status(500).json({ error }))
 }
@@ -126,24 +128,32 @@ exports.update = async (req, res) => {
 //delete POST ID
 exports.delete = async (req, res) => {
     const id = req.params.id;
-    await deleteFichier(id)
-    postModel.destroy({
-        where: { id: id }
-    })
-        .then((num) => {
-            if (num == 1) {
-                res.send({
-                    message: "Le post a été supprimé !"
-                });
-            } else {
-                res.send({
-                    message: `Impossible de supprimer le post avec id=${id}. Peut etre introuvable!`
+    UserModel.findOne({ where: { id: id } })
+        .then(user => {
+            if (user.image) {
+                const filename = user.image.split('images/posts/')[1];
+                fs.unlink(`images/posts/${filename}`, () => {
+
+                    postModel.destroy({
+                        where: { id: id }
+                    })
+                        .then((num) => {
+                            if (num == 1) {
+                                res.send({
+                                    message: "Le post a été supprimé !"
+                                });
+                            } else {
+                                res.send({
+                                    message: `Impossible de supprimer le post avec id=${id}. Peut etre introuvable!`
+                                });
+                            }
+                        })
+                        .catch(err => {
+                            res.status(500).send({
+                                message: "Impossible de supprimer le post avec id=" + id
+                            });
+                        });
                 });
             }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Impossible de supprimer le post avec id=" + id
-            });
-        });
+        }).catch(error => { return error })
 };
