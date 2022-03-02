@@ -42,13 +42,14 @@ exports.getPostWithLikeDislike = (req, res) => {
 }
 
 //Retourne Les post avec like et dislike
-exports.getPostsWithLikesWithDislikes = (req, res) => {
+exports.getPostsWithLikesWithDislikesWithUser = (req, res) => {
 
     //Utilisez l'alias défini dans models/index.js de la relation many to many
     postModel.findAll({
         include: [
             'Like',
-            'Dislike'
+            'Dislike',
+            'user'
         ]
     }).then(posts => {
 
