@@ -129,10 +129,10 @@ exports.update = async (req, res) => {
 //delete POST ID
 exports.delete = async (req, res) => {
     const id = req.params.id;
-    UserModel.findOne({ where: { id: id } })
-        .then(user => {
-            if (user.image) {
-                const filename = user.image.split('images/posts/')[1];
+    postModel.findOne({ where: { id: id } })
+        .then(post => {
+            if (post.image) {
+                const filename = post.image.split('images/posts/')[1];
                 fs.unlink(`images/posts/${filename}`, () => {
 
                     postModel.destroy({

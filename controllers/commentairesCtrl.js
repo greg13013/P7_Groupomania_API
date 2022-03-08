@@ -2,13 +2,10 @@ const db = require("../models");
 const commentaireModel = db.commentaire;
 
 
-  //Retourne un seul post
+  //Retourne un seul commentaire du post
 exports.getCommentaire = (req, res) => {
     const id = req.params.id;
-    commentaireModel.findOne({ where: {id: id}}).then(post => {
-        if (!post) {
-            return res.status(401).json({ error: 'Commentaire non trouvé !' });
-          }
+    commentaireModel.findAll({ where: {postId: id}, include: 'user'}).then(post => {
           res.status(200).json(post)
         }).catch(error => res.status(500).json({ error }))
 }
@@ -34,7 +31,11 @@ exports.create = (req, res) => {
     console.log(commentaire);
     commentaireModel.create(commentaire)
         .then(data => {
-            res.send(data);
+
+            //Retourne le commentaire avec l'user
+            commentaireModel.findAll({ where: {postId: data.dataValues.postId, id: data.dataValues.id}, include: 'user'}).then(post => {
+              res.status(200).json(post)
+            }).catch(error => res.status(500).json({ error }))
         })
         .catch(err => {
             res.status(500).send({
