@@ -20,7 +20,7 @@ module.exports = {
   DB: "heroku_86d2b01f8c98d97",
   dialect: "mysql",
   pool: {
-    max: 5,
+    max: 90,
     min: 0,
     acquire: 30000,
     idle: 10000
